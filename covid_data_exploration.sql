@@ -196,8 +196,8 @@ FROM pop_vs_vac
 
 -- Using Temp Table to perform Calculation on Partition By in previous query
 
-DROP Table if exists #PercentPopulationVaccinated
-Create Table #PercentPopulationVaccinated
+DROP Table if exists _percent_population_vaccinated
+Create Table _percent_population_vaccinated
 (
   continent VARCHAR(255),
   location VARCHAR(255),
@@ -207,7 +207,7 @@ Create Table #PercentPopulationVaccinated
   rolling_people_vaccinated INTEGER,
 );
 
-INSERT INTO #PercentPopulationVaccinated
+INSERT INTO _percent_population_vaccinated
 SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
 , SUM(CAST(vac.new_vaccinations AS INT)) OVER (Partition by dea.Location Order by dea.location, dea.Date) as rolling_people_vaccinated
 --, (rolling_people_vaccinated/population)*100
@@ -219,4 +219,4 @@ Join covid_vaccinations vac
 --order by 2,3
 
 SELECT *, (rolling_people_vaccinated/population)*100
-FROM #rolling_people_vaccinated
+FROM rolling_people_vaccinated
